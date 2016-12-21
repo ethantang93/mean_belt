@@ -1,0 +1,25 @@
+<div class="" ng-controller='showController'>
+  <table>
+    <thead>
+      <tr>
+        <td>options</td>
+        <td>vote</td>
+      </tr>
+    </thead>
+    {{poll.option1.count}}
+    <tbody ng-repeat='pol in poll'>
+      <tr>
+        <td>{{pol.option1.count}}</td>
+      </tr>
+      <tr>
+        <td>{{pol.option2.count}}</td>
+      </tr>
+      <tr>
+        <td>{{pol.option3.count}}</td>
+      </tr>
+      <tr>
+        <td>{{pol.option4.count}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
