@@ -1,23 +1,20 @@
 app.controller('loginController',['$scope','$location','userFactory',function($scope,$location,userFactory){
 
   $scope.login = function(user){
-    userFactory.AddUser(user,function(result){
-      console.log("factory",result);
-      if (result.result = 'duplicate'){
-        userFactory.GetUser(user,function(result){
-          console.log("result id",result._id)
-          $scope.current_user_id = result._id
-          $location.path('/dashboard')
+    userFactory.FindUser(user,function(result){
+      console.log("Find User Function returns",result)
+      if (result == null){
+        // if user is not found then we create the user
+        userFactory.Create(user,function(result1){
+          console.log("create user",result1)
+          $location.url('/dashboard')
         })
       }else{
-        userFactory.GetUser(user,function(result){
-          console.log("result id",result._id)
-          $scope.current_user_id = result._id
-          $location.path('/dashboard')
-        })
+        console.log("the user is found with",result._id)
+        $scope.current_user = result._id
+        console.log($scope.current_user)
+        $location.url('/dashboard')
       }
     })
   }
-
-
 }])

@@ -6,16 +6,139 @@
     <!-- angular modules setup -->
     <script type="text/javascript" src="angular/angular.js"></script>
     <script type="text/javascript" src="angular-route/angular-route.js"></script>
-    <!-- app setup -->
-    <script type="text/javascript" src = "assets/app.js"></script>
-    <!-- controllers setup -->
-    <script type="text/javascript" src = "assets/controllers/createController.js"></script>
-    <script type="text/javascript" src = "assets/controllers/dashboardController.js"></script>
-    <script type="text/javascript" src = "assets/controllers/loginController.js"></script>
-    <script type="text/javascript" src = "assets/controllers/showController.js"></script>
-    <!-- factory setup -->
-    <script type="text/javascript" src = "assets/factories/pollFactory.js"></script>
-    <script type="text/javascript" src = "assets/factories/userFactory.js"></script>
+    <script type="text/javascript">
+    var app = angular.module('app',['ngRoute']);
+    app.config(function($routeProvider){
+      $routeProvider.when('/',{
+        templateUrl:"/partials/login.html"
+      })
+      .when('/dashboard',{
+        templateUrl:"/partials/dashboard.html"
+      })
+      .when('/poll',{
+        templateUrl:"/partials/show.html"
+      })
+      .when('/create',{
+        templateUrl:"/partials/create.html"
+      })
+      .when('/show/:id',{
+        templateUrl:"/partials/show.html"
+      })
+      .otherwise({redirectTo:'/'})
+    });
+
+
+    app.controller('loginController',['$scope','$location','userFactory',function($scope,$location,userFactory){
+
+      $scope.login = function(user){
+        userFactory.FindUser(user,function(result){
+          if (result == null){
+            // if user is not found then we create the user
+            userFactory.Create(user,function(result1){
+              $location.url('/dashboard')
+            })
+          }else{
+            $location.url('/dashboard')
+          }
+        })
+      }
+    }]);
+
+
+    app.factory('userFactory',['$http',function($http){
+        var factory = {};
+        //
+        // this.index = function(callback){
+        //   $http.get('/orders').then(function(returned_data){
+        //     orders = returned_data.data;
+        //     callback(orders);
+        //   });
+        // };
+        factory.Create = function(user,callback){
+          $http.post('/user',user).then(function(returned_data){
+            var user = returned_data.data;
+            factory.user = user
+            callback(user)
+          })
+        }
+        factory.GetUser = function(){
+          return (factory.user);
+        }
+        factory.FindUser = function(user,callback){
+          $http.post('/finduser',user).then(function(returned_data){
+            console.log("from factory",returned_data.data)
+            factory.user = returned_data.data
+            callback(returned_data.data)
+          })
+        }
+        return factory;
+    }]);
+
+    app.controller('dashboardController',['$scope','pollFactory','userFactory',function($scope,pollFactory,userFactory){
+      var index = function(){
+        pollFactory.index(function(returned_data){
+          console.log("this is the index from customer controller",returned_data);
+          $scope.polls = returned_data;
+        });
+      };
+      $scope.polls = []
+      index();
+
+      $scope.current_user = userFactory.GetUser()
+    }]);
+
+    app.controller('createController',['$location','$scope','pollFactory',function($location,$scope,pollFactory){
+
+      $scope.AddPoll = function(poll){
+        pollFactory.AddPoll(poll,function(returned_data){
+          console.log(returned_data)
+        });
+      }
+
+
+    }]);
+
+    app.controller('showController',['$routeParams','$scope','$location','userFactory','pollFactory',function($routeParams,$scope,$location,userFactory,pollFactory){
+      var id = $routeParams.id
+      console.log(id);
+      pollFactory.GetPoll(id,function(result){
+        console.log(result);
+        $scope.poll = result;
+        console.log("!!",$scope.poll)
+      })
+
+    }]);
+
+
+
+    app.factory('pollFactory',['$http',function($http){
+      function pollFactory(){
+        var _this = this;
+        this.AddPoll = function(poll, callback){
+          $http.post('/poll',poll).then(function(returned_data){
+            console.log("after add http request",returned_data.data);
+            callback(returned_data.data);
+          })
+        }
+        this.index = function(callback){
+          $http.get('/polls').then(function(returned_data){
+            console.log(returned_data.data);
+            polls = returned_data.data;
+            callback(polls);
+          });
+        };
+        this.GetPoll = function(id, callback){
+          $http.get(`/get/poll/${id}`).then(function(returned_data){
+            console.log(returned_data.data);
+            callback(returned_data);
+          })
+        }
+      }
+      return new pollFactory();
+    }])
+
+
+    </script>
   </head>
 
   <body>

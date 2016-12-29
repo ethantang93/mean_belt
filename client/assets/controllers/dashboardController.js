@@ -1,4 +1,4 @@
-app.controller('dashboardController',['$scope','pollFactory',function($scope,pollFactory){
+app.controller('dashboardController',['$scope','pollFactory','userFactory',function($scope,pollFactory,userFactory){
   var index = function(){
     pollFactory.index(function(returned_data){
       console.log("this is the index from customer controller",returned_data);
@@ -7,4 +7,7 @@ app.controller('dashboardController',['$scope','pollFactory',function($scope,pol
   };
   $scope.polls = []
   index();
+  var user = userFactory.GetUser();
+
+  console.log("!!!!",user)
 }])

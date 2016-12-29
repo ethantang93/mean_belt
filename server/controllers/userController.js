@@ -16,7 +16,6 @@ function UserController(){
     user.create(req.body,function(err,result){
       if(err){
         console.log("!!!!! error creating user object. duplicate");
-        res.json({result:'duplicate'})
       }else{
         console.log("success creating user object",result);
         res.json(result);
@@ -24,12 +23,11 @@ function UserController(){
     });
   };
   this.find = function(req,res){
-    console.log("user name",req.body.name)
     user.findOne({name:req.body.name},function(err,result){
       if(err){
         console.log(err);
       }else{
-        console.log("found the user")
+        console.log("found the user ",result)
         res.json(result)
       }
     })

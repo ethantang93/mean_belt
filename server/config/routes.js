@@ -4,8 +4,8 @@ polls = require('../controllers/pollsController.js')
 module.exports = function(app){
   // app.get('/products', products.index);
   app.post('/user', users.create);
+  app.post('/finduser', users.find);
   app.post('/poll', polls.create);
   app.get('/polls', polls.index);
   app.get('/get/poll/:id',polls.find);
-  app.post('/getuser', users.find);
 }
