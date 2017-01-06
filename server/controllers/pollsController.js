@@ -3,14 +3,15 @@ var poll = mongoose.model('Poll');
 
 function PollController(){
   this.index = function(req,res){
-    poll.find({},function(err,results){
+    poll.find({})
+    .populate('_creator')
+    .exec(function(err,result){
       if(err){
-        console.log(err);
+        res.json(err);
       }else{
-        console.log(results)
-        res.json(results);
-      };
-    });
+        res.json(result);
+      }
+    })
   };
   this.create = function(req,res){
     poll.create(req.body,function(err,result){
