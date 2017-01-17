@@ -8,4 +8,6 @@ module.exports = function(app){
   app.post('/poll', polls.create);
   app.get('/polls', polls.index);
   app.get('/get/poll/:id',polls.find);
+  app.patch('/poll/:id/:vote_id',polls.update);
+  app.delete('/polls/:id',polls.delete)
 }

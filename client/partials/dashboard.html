@@ -21,7 +21,8 @@
       <td>{{poll._creator.name}}</td>
       <td><a href="#!/show/{{poll._id}}">{{poll.question}}</a></td>
       <td>{{poll.created_at | date:'hh:mm, MMM dd, yyyy'}}</td>
-      <td></td>
+
+      <td><button ng-show="poll._creator._id===current_user._id" ng-click="delete(poll)">DELETE</button></td>
     </tr>
   </tbody>
 </table>

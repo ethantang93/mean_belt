@@ -59,7 +59,6 @@
         }
         factory.FindUser = function(user,callback){
           $http.post('/finduser',user).then(function(returned_data){
-            console.log("from factory",returned_data.data)
             factory.user = returned_data.data
             callback(returned_data.data)
           })
@@ -70,14 +69,18 @@
     app.controller('dashboardController',['$scope','pollFactory','userFactory',function($scope,pollFactory,userFactory){
       var index = function(){
         pollFactory.index(function(returned_data){
-          console.log("this is the index from customer controller",returned_data);
           $scope.polls = returned_data;
         });
       };
       $scope.polls = []
       index();
 
-      $scope.current_user = userFactory.GetUser()
+      $scope.current_user = userFactory.GetUser();
+      $scope.delete = function(poll){
+        pollFactory.Delete(poll, function(){
+          index();
+        });
+      }
     }]);
 
     app.controller('createController',['$location','$scope','pollFactory','userFactory',function($location,$scope,pollFactory,userFactory){
@@ -97,12 +100,17 @@
 
     app.controller('showController',['$routeParams','$scope','$location','userFactory','pollFactory',function($routeParams,$scope,$location,userFactory,pollFactory){
       var id = $routeParams.id
-      console.log(id);
-      pollFactory.GetPoll(id,function(result){
-        console.log(result);
+      var index = function(){
+        pollFactory.GetPoll(id,function(result){
+        console.log(result+"!!!!");
         $scope.poll = result;
         console.log("!!",$scope.poll)
-      })
+      })};
+      index();
+      $scope.Vote = function(id,vote_id){
+        pollFactory.Vote(id,vote_id);
+        index();
+      }
 
     }]);
 
@@ -119,7 +127,6 @@
         }
         this.index = function(callback){
           $http.get('/polls').then(function(returned_data){
-            console.log(returned_data.data);
             polls = returned_data.data;
             callback(polls);
           });
@@ -127,7 +134,18 @@
         this.GetPoll = function(id, callback){
           $http.get(`/get/poll/${id}`).then(function(returned_data){
             console.log(returned_data.data);
-            callback(returned_data);
+            callback(returned_data.data);
+          })
+        };
+        this.Vote = function(id,vote_id){
+          $http.patch(`/poll/${id}/${vote_id}`).then(function(returned_data){
+            console.log(returned_data);
+          })
+        };
+        this.Delete = function(poll, callback){
+          $http.delete(`/polls/${poll._id}`).then(function(returned_data){
+            console.log(returned_data);
+            callback();
           })
         }
       }

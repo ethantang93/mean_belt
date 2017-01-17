@@ -3,22 +3,30 @@
     <thead>
       <tr>
         <td>options</td>
-        <td>vote</td>
+        <td>vote count</td>
+        <td>actions</td>
       </tr>
     </thead>
-    {{poll.option1.count}}
-    <tbody ng-repeat='pol in poll'>
+    <tbody>
       <tr>
-        <td>{{pol.option1.count}}</td>
+        <td>{{poll.option1.name}}</td>
+        <td>{{poll.option1.count}}</td>
+        <td><button ng-click="Vote(poll._id,0)">Vote</button></td>
       </tr>
       <tr>
-        <td>{{pol.option2.count}}</td>
+        <td>{{poll.option2.name}}</td>
+        <td>{{poll.option2.count}}</td>
+        <td><button ng-click="Vote(poll._id,1)" name="action">Vote</button></td>
       </tr>
       <tr>
-        <td>{{pol.option3.count}}</td>
+        <td>{{poll.option3.name}}</td>
+        <td>{{poll.option3.count}}</td>
+        <td><button ng-click="Vote(poll._id,2)" name="action">Vote</button></td>
       </tr>
       <tr>
-        <td>{{pol.option4.count}}</td>
+        <td>{{poll.option4.name}}</td>
+        <td>{{poll.option4.count}}</td>
+        <td><button ng-click="Vote(poll._id,3)" name="action">Vote</button></td>
       </tr>
     </tbody>
   </table>
